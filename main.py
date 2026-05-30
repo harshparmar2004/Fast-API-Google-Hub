@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import gmail, sheets, drive, calendar, docs, slides, tasks, contacts, auth_backend
+from routers import gmail, sheets, drive, calendar, docs, slides, tasks, contacts, auth_backend, meet, agent
 import uvicorn
 import os
 from database import init_db
@@ -8,7 +8,7 @@ from database import init_db
 app = FastAPI(
     title="Google Workspace Agent API",
     description="A FastAPI backend for Claude/OpenAI agents to manipulate Google Workspace apps.",
-    version="1.0.0"
+    version="1.1.0"
 )
 
 # Initialize Token Database
@@ -35,6 +35,8 @@ app.include_router(docs.router, prefix="/api/docs", tags=["Docs"])
 app.include_router(slides.router, prefix="/api/slides", tags=["Slides"])
 app.include_router(tasks.router, prefix="/api/tasks", tags=["Tasks"])
 app.include_router(contacts.router, prefix="/api/contacts", tags=["Contacts"])
+app.include_router(meet.router, prefix="/api/meet", tags=["Meet"])
+app.include_router(agent.router, prefix="/api/agent", tags=["Agent"])
 
 @app.get("/health")
 def health_check():

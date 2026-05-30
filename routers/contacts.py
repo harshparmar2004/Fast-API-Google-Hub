@@ -1,47 +1,62 @@
 from fastapi import APIRouter, Depends
-from auth import get_people_service
 from pydantic import BaseModel
-from typing import Optional
+from auth import get_people_service
+from utils import format_response
 
 router = APIRouter()
 
-class CreateContactRequest(BaseModel):
+class ContactReq(BaseModel):
     given_name: str
-    family_name: Optional[str] = None
-    email: Optional[str] = None
-    phone_number: Optional[str] = None
+    family_name: str
+    email: str
+    phone: str = ""
 
-@router.get("/")
-def list_contacts(service = Depends(get_people_service), pageSize: int = 100):
-    """List out contacts."""
-    results = service.people().connections().list(
+@router.get("/list")
+def list_contacts(service=Depends(get_people_service)):
+    # 41. List all contacts
+    res = service.people().connections().list(
         resourceName='people/me',
-        pageSize=pageSize,
+        pageSize=50,
         personFields='names,emailAddresses,phoneNumbers'
     ).execute()
-    return results.get('connections', [])
+    return format_response(res.get('connections', []))
+
+@router.get("/search")
+def search_contacts(q: str, service=Depends(get_people_service)):
+    # 42. Search contact by name
+    res = service.people().searchContacts(
+        query=q,
+        readMask='names,emailAddresses,phoneNumbers'
+    ).execute()
+    return format_response(res.get('results', []))
 
 @router.post("/create")
-def create_contact(req: CreateContactRequest, service = Depends(get_people_service)):
-    """Create a new contact."""
-    contact_body = {
-        "names": [
-            {
-                "givenName": req.given_name,
-                "familyName": req.family_name or ""
-            }
-        ]
+def create_contact(req: ContactReq, service=Depends(get_people_service)):
+    # 43. Create new contact
+    contact = {
+        "names": [{"givenName": req.given_name, "familyName": req.family_name}],
+        "emailAddresses": [{"value": req.email}]
     }
-    if req.email:
-         contact_body["emailAddresses"] = [{"value": req.email}]
-    if req.phone_number:
-         contact_body["phoneNumbers"] = [{"value": req.phone_number}]
-    
-    result = service.people().createContact(body=contact_body).execute()
-    return result
+    if req.phone:
+        contact["phoneNumbers"] = [{"value": req.phone}]
+        
+    res = service.people().createContact(body=contact).execute()
+    return format_response(res)
 
-@router.delete("/{resource_name:path}")
-def delete_contact(resource_name: str, service = Depends(get_people_service)):
-    """Delete a contact (resource_name e.g. people/c123456)."""
-    service.people().deleteContact(resourceName=resource_name).execute()
-    return {"status": "deleted"}
+@router.put("/{resource_name:path}")
+def update_contact(resource_name: str, req: ContactReq, service=Depends(get_people_service)):
+    # 44. Update contact details
+    # Must retrieve etag first
+    person = service.people().get(resourceName=resource_name, personFields='names,emailAddresses,phoneNumbers').execute()
+    
+    person['names'] = [{"givenName": req.given_name, "familyName": req.family_name}]
+    person['emailAddresses'] = [{"value": req.email}]
+    if req.phone:
+        person['phoneNumbers'] = [{"value": req.phone}]
+        
+    res = service.people().updateContact(
+        resourceName=resource_name,
+        updatePersonFields='names,emailAddresses,phoneNumbers',
+        body=person
+    ).execute()
+    return format_response(res)
