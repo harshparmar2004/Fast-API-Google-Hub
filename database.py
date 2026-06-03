@@ -32,6 +32,7 @@ def get_refresh_token(api_key: str):
         return row[0] if row else None
     except Exception:
         return None
+<<<<<<< HEAD
 
 def get_email_by_api_key(api_key: str):
     try:
@@ -43,3 +44,5 @@ def get_email_by_api_key(api_key: str):
         return row[0] if row else None
     except Exception:
         return None
+=======
+>>>>>>> 35566e39ffc8bcd207f42827b910bfa0d39a0585

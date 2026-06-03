@@ -24,10 +24,13 @@ def get_google_credentials(request: Request, credentials: HTTPAuthorizationCrede
         if refresh_token:
             if not GOOGLE_CLIENT_ID or not GOOGLE_CLIENT_SECRET:
                 raise HTTPException(status_code=500, detail="Backend missing Google Client ID/Secret")
+<<<<<<< HEAD
             
             from database import get_email_by_api_key
             request.state.user_email = get_email_by_api_key(req_api_key) or "agent@hub"
             
+=======
+>>>>>>> 35566e39ffc8bcd207f42827b910bfa0d39a0585
             return Credentials(
                 token=None,
                 refresh_token=refresh_token,
@@ -41,7 +44,10 @@ def get_google_credentials(request: Request, credentials: HTTPAuthorizationCrede
     # Authenticate via Frontend Bearer token (for UI / short-lived tasks)
     if credentials:
         token = credentials.credentials
+<<<<<<< HEAD
         request.state.user_email = "ui_user@hub" # We can fetch real email later if needed
+=======
+>>>>>>> 35566e39ffc8bcd207f42827b910bfa0d39a0585
         return Credentials(token)
         
     raise HTTPException(status_code=401, detail="Not authenticated. Provide X-API-Key for bots, or Bearer token for UI.")

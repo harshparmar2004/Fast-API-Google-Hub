@@ -1,6 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+<<<<<<< HEAD
 from routers import gmail, sheets, drive, calendar, docs, slides, tasks, contacts, auth_backend, meet, agent, workflow, dashboard, memory, automation
+=======
+from routers import gmail, sheets, drive, calendar, docs, slides, tasks, contacts, auth_backend, meet, agent
+>>>>>>> 35566e39ffc8bcd207f42827b910bfa0d39a0585
 import uvicorn
 import os
 from database import init_db
@@ -36,12 +40,16 @@ app.include_router(slides.router, prefix="/api/slides", tags=["Slides"])
 app.include_router(tasks.router, prefix="/api/tasks", tags=["Tasks"])
 app.include_router(contacts.router, prefix="/api/contacts", tags=["Contacts"])
 app.include_router(meet.router, prefix="/api/meet", tags=["Meet"])
+<<<<<<< HEAD
 app.include_router(agent.router, prefix="/api/agent", tags=["Agent"])\n
 app.include_router(workflow.router, prefix="/api/workflow", tags=["Workflow"])
 app.include_router(dashboard.router, prefix="/api/dashboard", tags=["Dashboard"])
 app.include_router(memory.router, prefix="/api/memory", tags=["Memory"])
 app.include_router(automation.router, prefix="/api/automation", tags=["Automation"])
 
+=======
+app.include_router(agent.router, prefix="/api/agent", tags=["Agent"])
+>>>>>>> 35566e39ffc8bcd207f42827b910bfa0d39a0585
 
 @app.get("/health")
 def health_check():

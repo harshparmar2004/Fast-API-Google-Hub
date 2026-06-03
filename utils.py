@@ -1,4 +1,5 @@
 from datetime import datetime
+<<<<<<< HEAD
 import firebase_admin
 from firebase_admin import credentials, firestore
 from fastapi import Request
@@ -43,4 +44,13 @@ def format_response(request: Request, action_name: str, data=None, success=True)
         "data": data,
         "timestamp": ts,
         "action": action_name
+=======
+
+def format_response(data=None, success=True):
+    return {
+        "success": success,
+        "user": "authenticated_user",
+        "data": data,
+        "timestamp": datetime.utcnow().isoformat() + "Z"
+>>>>>>> 35566e39ffc8bcd207f42827b910bfa0d39a0585
     }

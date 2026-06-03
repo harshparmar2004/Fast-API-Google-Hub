@@ -5,4 +5,7 @@ google-auth-httplib2
 google-auth-oauthlib
 pydantic
 requests
+<<<<<<< HEAD
 firebase-admin
+=======
+>>>>>>> 35566e39ffc8bcd207f42827b910bfa0d39a0585
